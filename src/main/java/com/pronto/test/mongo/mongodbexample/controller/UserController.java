@@ -20,12 +20,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @GetMapping("/user")
-    public List<User> greeting() {
-        return (List<User>) userService.getAllUsers();
-    }
-
+    
     @Autowired
     private SecurityService securityService;
 
