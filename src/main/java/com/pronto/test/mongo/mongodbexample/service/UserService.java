@@ -13,9 +13,9 @@ import java.util.Collection;
 
 public interface UserService {
 
-    MemberUserVO getUserByUsername(String username,HttpServletResponse response);
+    String getUserByUsername(String username)throws Exception;
     Collection<MemberUser> getAllUsers();
-    MemberUserVO create(MemberRegister memberRegister, HttpServletResponse response) throws Exception ;
+    String create(MemberRegister memberRegister, HttpServletResponse response) throws Exception ;
     Page<MemberUser> userList(Pageable pageable);
     Boolean checkIfMemberExists(String userName);
 

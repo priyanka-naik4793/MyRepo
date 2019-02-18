@@ -3,6 +3,7 @@ package com.pronto.test.mongo.mongodbexample.service;
 import com.pronto.test.mongo.mongodbexample.co.MemberRegister;
 import com.pronto.test.mongo.mongodbexample.document.MemberUser;
 import com.pronto.test.mongo.mongodbexample.repository.MemberUserRepository;
+import com.pronto.test.mongo.mongodbexample.security.JwtUtils;
 import com.pronto.test.mongo.mongodbexample.vo.MemberUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,9 +43,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MemberUserVO getUserByUsername(String username,HttpServletResponse response) {
+    public String getUserByUsername(String username) throws Exception{
         MemberUser memberUser= memberUserRepository.findByUserName(username);
-        return new MemberUserVO(response.getHeader(HEADER_STRING),memberUser.getMemberId());
+        if(memberUser!=null){
+            return JwtUtils.getAuthenticationToken(memberUser.getuserName());
+        }else {
+            throw new Exception("User Not Found");
+        }
     }
 
     @Override
@@ -53,17 +58,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MemberUserVO create(MemberRegister userRegister, HttpServletResponse response) throws Exception {
+    public String create(MemberRegister userRegister, HttpServletResponse response) throws Exception {
 
-        if (!checkIfMemberExists(userRegister.userName)) {
+        if (!checkIfMemberExists(userRegister.getUserName())) {
             MemberUser user = new MemberUser();
-            user.setuserName(userRegister.userName);
+            user.setuserName(userRegister.getUserName());
             user.setMemberId(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME));
-            user.setGender(userRegister.gender);
-            user.setPassword(new BCryptPasswordEncoder().encode(userRegister.password));
-            user = memberUserRepository.save(user);
-            return new MemberUserVO(response.getHeader(HEADER_STRING), user.getMemberId());
-
+            user.setGender(userRegister.getGender());
+            user.setPassword(new BCryptPasswordEncoder().encode(userRegister.getPassword()));
+            memberUserRepository.save(user);
+            return  "success";
         } else {
             throw new Exception("User Already Exists");
         }

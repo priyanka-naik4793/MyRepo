@@ -25,15 +25,15 @@ import static com.pronto.test.mongo.mongodbexample.constants.SecurityConstants.*
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
+
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
-
-
 
             MemberUser creds = new ObjectMapper().readValue(req.getInputStream(), MemberUser.class);
             return authenticationManager.authenticate(
@@ -46,18 +46,16 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new RuntimeException(e);
         }
     }
+
     @Override
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
-        String token = Jwts.builder()
-                .setSubject(((User) auth.getPrincipal()).getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET)
-                .compact();
+        String token = JwtUtils.getAuthenticationToken(((User) auth.getPrincipal()).getUsername());
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
+
 
 }
 

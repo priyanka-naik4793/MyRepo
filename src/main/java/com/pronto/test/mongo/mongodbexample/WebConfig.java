@@ -48,7 +48,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .authorizeRequests()
                 // allow all POST requests
-                .antMatchers(HttpMethod.POST, SIGN_UP_URL)
+                .antMatchers(HttpMethod.POST, SIGN_UP_URL,LOGIN_URL)
                 .permitAll()
                 // any other requests must be authenticated
                 .anyRequest().
