@@ -1,73 +1,34 @@
 package com.pronto.test.mongo.mongodbexample.controller;
 
-import com.pronto.test.mongo.mongodbexample.document.User;
-import com.pronto.test.mongo.mongodbexample.document.UserRegister;
-import com.pronto.test.mongo.mongodbexample.service.SecurityService;
+import com.pronto.test.mongo.mongodbexample.co.MemberRegister;
+import com.pronto.test.mongo.mongodbexample.dto.RestResponseDto;
 import com.pronto.test.mongo.mongodbexample.service.UserService;
-import com.pronto.test.mongo.mongodbexample.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-@Controller
+@RestController
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private SecurityService securityService;
 
-    @Autowired
-    private UserValidator userValidator;
-
-    @RequestMapping(value = "/registration", method = RequestMethod.GET)
-    public String registration(Model model) {
-        model.addAttribute("userForm", new UserRegister());
-
-        return "registration";
+    @PostMapping("/sign-up")
+    public RestResponseDto signUp(@RequestBody MemberRegister memberRegister,HttpServletResponse response) throws Exception {
+         RestResponseDto restResponseDto = new RestResponseDto() ;
+         restResponseDto.data=userService.create(memberRegister,response);
+         return restResponseDto;
     }
-
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String registration(@ModelAttribute("userForm") UserRegister userForm, BindingResult bindingResult) {
-        userValidator.validate(userForm, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            return "registration";
-        }
-
-        userService.create(userForm);
-
-        securityService.autologin(userForm.username, userForm.password);
-        return "redirect:/list";
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Model model, String error, String logout) {
-        if (error != null)
-            model.addAttribute("error", "Your username and password is invalid.");
-        if (logout != null)
-            model.addAttribute("message", "You have been logged out successfully.");
-        return "login";
-    }
-
-    @RequestMapping(value = {"/", "/list"},method = RequestMethod.GET)
-    public String userList(Model model, Pageable pageable) {
-        Page<User> pages = userService.userList(pageable);
-        model.addAttribute("number", pages.getNumber());
-        model.addAttribute("totalPages", pages.getTotalPages());
-        model.addAttribute("totalElements",
-                pages.getTotalElements());
-        model.addAttribute("size", pages.getSize());
-        model.addAttribute("users", pages.getContent());
-        return "welcome";
+    @PostMapping("/login")
+    public RestResponseDto login(@RequestBody MemberRegister memberRegister, HttpServletRequest request,HttpServletResponse response) throws Exception {
+        RestResponseDto restResponseDto = new RestResponseDto() ;
+        restResponseDto.data = userService.getUserByUsername(memberRegister.userName,response);
+        return restResponseDto;
     }
 }
-
-

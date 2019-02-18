@@ -1,53 +1,72 @@
 package com.pronto.test.mongo.mongodbexample.service;
 
-import com.pronto.test.mongo.mongodbexample.document.User;
-import com.pronto.test.mongo.mongodbexample.document.UserRegister;
-import com.pronto.test.mongo.mongodbexample.repository.UserRepository;
+import com.pronto.test.mongo.mongodbexample.co.MemberRegister;
+import com.pronto.test.mongo.mongodbexample.document.MemberUser;
+import com.pronto.test.mongo.mongodbexample.repository.MemberUserRepository;
+import com.pronto.test.mongo.mongodbexample.vo.MemberUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 
+import static com.pronto.test.mongo.mongodbexample.constants.SecurityConstants.HEADER_STRING;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private MemberUserRepository memberUserRepository;
 
 
     @Autowired
     private SequenceGeneratorService sequenceGenerator;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository){
-        this.userRepository=userRepository;
+
+    @Override
+    public Page<MemberUser> userList(Pageable pageable) {
+        return this.memberUserRepository.userList(pageable);
     }
 
     @Override
-    public Page<User> userList(Pageable pageable) {
-        return this.userRepository.userList(pageable);
+    public Boolean checkIfMemberExists(String userName) {
+
+        if (this.memberUserRepository.findByUserName(userName) != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public MemberUserVO getUserByUsername(String username,HttpServletResponse response) {
+        MemberUser memberUser= memberUserRepository.findByUserName(username);
+        return new MemberUserVO(response.getHeader(HEADER_STRING),memberUser.getMemberId());
     }
 
     @Override
-    public Collection<User> getAllUsers() {
-        return userRepository.findAll();
+    public Collection<MemberUser> getAllUsers() {
+        return memberUserRepository.findAll();
     }
 
     @Override
-    public User create(UserRegister userRegister) {
-        User user = new User();
-        user.setUsername(userRegister.username);
-        user.setUserId(sequenceGenerator.generateSequence(User.SEQUENCE_NAME));
-        user.setGender(userRegister.gender);
-        user.setPassword(new BCryptPasswordEncoder().encode(userRegister.password));
-        return userRepository.save(user);
+    public MemberUserVO create(MemberRegister userRegister, HttpServletResponse response) throws Exception {
+
+        if (!checkIfMemberExists(userRegister.userName)) {
+            MemberUser user = new MemberUser();
+            user.setuserName(userRegister.userName);
+            user.setMemberId(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME));
+            user.setGender(userRegister.gender);
+            user.setPassword(new BCryptPasswordEncoder().encode(userRegister.password));
+            user = memberUserRepository.save(user);
+            return new MemberUserVO(response.getHeader(HEADER_STRING), user.getMemberId());
+
+        } else {
+            throw new Exception("User Already Exists");
+        }
+
     }
 }

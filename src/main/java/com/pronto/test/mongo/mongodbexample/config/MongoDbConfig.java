@@ -1,7 +1,8 @@
 package com.pronto.test.mongo.mongodbexample.config;
 
-import com.pronto.test.mongo.mongodbexample.document.User;
-import com.pronto.test.mongo.mongodbexample.repository.UserRepository;
+
+import com.pronto.test.mongo.mongodbexample.document.MemberUser;
+import com.pronto.test.mongo.mongodbexample.repository.MemberUserRepository;
 import com.pronto.test.mongo.mongodbexample.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,53 +10,55 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@EnableMongoRepositories(basePackageClasses = UserRepository.class)
+import java.util.UUID;
+
+@EnableMongoRepositories(basePackageClasses = MemberUserRepository.class)
 @Configuration
 public class MongoDbConfig {
-@Autowired
-    SequenceGeneratorService sequenceGenerator;
 
+    @Autowired
+    SequenceGeneratorService sequenceGenerator;
     @Bean
-    CommandLineRunner commandLineRunner(UserRepository userRepository){
+    CommandLineRunner commandLineRunner(MemberUserRepository userRepository) {
         return strings -> {
             userRepository.deleteAll();
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"priyanka","FEMALE","xyz"));
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"vikas","MALE","abc"));
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"mahesh","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "priyanka", "FEMALE", UUID.randomUUID().toString()));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "vikas", "MALE", UUID.randomUUID().toString()));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "mahesh", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"kriti","FEMALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "kriti", "FEMALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"abc","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "abc", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"pqr","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "pqr", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"sanam","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "sanam", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"sameer","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "sameer", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"seri","FEMALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "seri", "FEMALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"timi","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "timi", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"ati","FEMALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "ati", "FEMALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"anish","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "anish", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"akku","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "akku", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"arif","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "arif", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"gajesh","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "gajesh", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"gargi","FEMAKE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "gargi", "FEMAKE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"twinkle","FEMALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "twinkle", "FEMALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"tameer","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "tameer", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"rohan","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "rohan", "MALE", UUID.randomUUID().toString()));
 
-            userRepository.save(new User(sequenceGenerator.generateSequence(User.SEQUENCE_NAME),"kamal","MALE","abc"));
+            userRepository.save(new MemberUser(sequenceGenerator.generateSequence(MemberUser.SEQUENCE_NAME), "kamal", "MALE", UUID.randomUUID().toString()));
 
         };
     }
